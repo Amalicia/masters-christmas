@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Christmas Do Pre-order</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Lato:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #1e3a2c; --green-2: #2c5440; --gold: #c39a4b; --gold-soft: #f3e6c8; --cream: #fbf7ef;
+    --ink: #2a2622; --muted: #6b6258; --line: #e3d8c3; --red: #9b2c2c;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    margin: 0; padding: 2rem 16px 0; color: var(--ink);
+    font: 16px/1.5 Lato, system-ui, sans-serif;
+    background: radial-gradient(circle at 50% 0, var(--green-2), var(--green) 60%) fixed var(--green);
+  }
+  .card {
+    max-width: 42rem; margin: 0 auto; background: var(--cream); border-radius: 16px 16px 0 0;
+    border-top: 6px solid var(--gold); box-shadow: 0 20px 50px rgba(0,0,0,.35);
+  }
+  header { text-align: center; padding: 2rem 1.5rem 1.5rem; border-bottom: 1px solid var(--line); }
+  header img { width: 120px; height: 120px; border-radius: 50%; background: #fff; padding: 6px; box-shadow: 0 0 0 3px var(--gold); }
+  h1 { font-family: Cinzel, serif; font-size: clamp(1.5rem, 5vw, 2rem); margin: 1rem 0 .25rem; color: var(--green); letter-spacing: .03em; }
+  .sub { margin: 0; color: var(--muted); }
+  .sub a { color: var(--green-2); font-weight: 700; }
+  form { padding: .5rem 1rem 0; }
+  fieldset { border: 0; padding: 0; margin: 1.75rem 0 0; min-width: 0; }
+  legend {
+    font-family: Cinzel, serif; font-weight: 700; color: var(--green); font-size: 1.2rem;
+    display: flex; align-items: center; gap: .5rem; width: 100%; padding: 0 .25rem;
+  }
+  legend::after { content: ""; flex: 1; height: 1px; background: var(--gold); opacity: .6; }
+  .hint { font-size: .85rem; color: var(--muted); margin: .4rem .25rem .75rem; }
+  label.field { display: block; margin: .9rem .25rem 0; font-weight: 700; font-size: .95rem; }
+  small { color: var(--muted); font-weight: 400; }
+  select, input[type=text], textarea {
+    display: block; width: 100%; margin-top: .3rem; padding: .65rem .75rem; font: inherit; color: var(--ink);
+    background: #fff; border: 1px solid var(--line); border-radius: 10px;
+  }
+  textarea { min-height: 4.5rem; resize: vertical; }
+  select:focus, input[type=text]:focus, textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px rgba(195,154,75,.3); }
+
+  /* dish cards */
+  .dish {
+    display: flex; gap: .85rem; padding: .75rem; margin-top: .6rem; background: #fff;
+    border: 1px solid var(--line); border-radius: 12px; transition: border-color .15s, box-shadow .15s;
+  }
+  .dish:has(:checked) { border-color: var(--gold); box-shadow: 0 0 0 2px var(--gold); }
+  .dish img { flex: none; width: 88px; height: 88px; object-fit: cover; border-radius: 8px; background: var(--gold-soft); }
+  .dish .info { flex: 1; min-width: 0; }
+  .dish h3 { margin: 0; font-size: 1rem; line-height: 1.3; }
+  .tags { font-weight: 400; color: var(--muted); font-size: .85rem; white-space: nowrap; }
+  .viet { margin: 0; color: var(--gold); font-style: italic; font-size: .85rem; }
+  .desc { margin: .3rem 0 0; color: var(--muted); font-size: .88rem; }
+  .none { align-items: center; }
+  .none .info { font-weight: 700; color: var(--muted); }
+
+  /* variant pills: the radio is the real control, the pill is its label */
+  .opts { display: flex; flex-wrap: wrap; gap: .4rem; margin-top: .55rem; }
+  .opt { position: relative; cursor: pointer; }
+  .opt input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+  .opt span {
+    display: inline-block; padding: .3rem .7rem; font-size: .85rem; border-radius: 999px;
+    border: 1px solid var(--line); background: var(--cream);
+  }
+  .opt:hover span { border-color: var(--gold); }
+  .opt input:checked + span { background: var(--green); border-color: var(--green); color: var(--cream); font-weight: 700; }
+  .opt input:focus-visible + span { outline: 3px solid rgba(195,154,75,.6); outline-offset: 2px; }
+
+  /* sticky total + submit */
+  .bar {
+    position: sticky; bottom: 0; margin: 1.5rem -1rem 0; padding: .9rem 1rem calc(.9rem + env(safe-area-inset-bottom));
+    background: var(--green); color: var(--cream); display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+    box-shadow: 0 -8px 20px rgba(0,0,0,.2);
+  }
+  .bar .sum { flex: 1; }
+  .bar strong { font-family: Cinzel, serif; font-size: 1.4rem; color: var(--gold); display: block; line-height: 1.1; }
+  button {
+    padding: .8rem 1.5rem; font: 700 1rem Lato, sans-serif; letter-spacing: .03em;
+    color: var(--green); background: var(--gold); border: 0; border-radius: 10px; cursor: pointer;
+  }
+  button:hover { filter: brightness(1.08); }
+  button:disabled { opacity: .6; cursor: wait; }
+  #status { flex-basis: 100%; margin: 0; font-weight: 700; color: var(--gold-soft); }
+  #status:empty { display: none; }
+  #status.error { color: #f4b4b4; }
+</style>
+</head>
+<body>
+<main class="card">
+  <header>
+    <img src="logo.png" alt="Masters of Defence logo">
+    <h1>Masters of Defence<br>Christmas Do 🎄</h1>
+    <p class="sub">Pre-order your food for <a href="https://www.halongbiggleswade.co.uk/" target="_blank" rel="noopener">Ha Long, Biggleswade</a></p>
+  </header>
+
+  <form id="f">
+    <fieldset>
+      <legend>About you</legend>
+      <label class="field">Your name <input type="text" name="name" required maxlength="100" autocomplete="name"></label>
+    </fieldset>
+
+    <p class="hint" style="margin-top:1.5rem">(N) nuts · (G) gluten · (D) dairy · (V) vegetarian · 🌶 spicy. Tap a price to choose.</p>
+
+    <fieldset data-course="starter"><legend>Starters &amp; Soup</legend></fieldset>
+    <fieldset data-course="main"><legend>Mains</legend></fieldset>
+    <label class="field" id="withLabel" hidden>Your main comes with
+      <select name="mainWith"><option>Rice</option><option>Vermicelli noodles</option></select>
+    </label>
+    <fieldset data-course="side"><legend>Sides</legend></fieldset>
+    <fieldset data-course="dessert"><legend>Desserts</legend></fieldset>
+
+    <fieldset>
+      <legend>Anything we should know?</legend>
+      <label class="field">Allergies / dietary requirements <small>(passed on to the restaurant)</small>
+        <textarea name="dietary" maxlength="300"></textarea>
+      </label>
+      <label class="field">Anything else? <textarea name="notes" maxlength="300"></textarea></label>
+    </fieldset>
+
+    <div class="bar">
+      <div class="sum"><span id="picked">Pick a main to get started</span><strong id="total">£0.00</strong></div>
+      <button>Submit order</button>
+      <p id="status" role="status"></p>
+    </div>
+  </form>
+</main>
+
+<script>
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyoKFd6ec00vV6trtwuE0hventaqLWcppf8hVJRUviGENZRWAtSe9BkNWnHIs7PU8E/exec';
+
+// c: course, n: dish, t: allergen tags, v: Vietnamese name, d: description,
+// p: price or {variant: price}, img: photo in img/, side: comes with rice or vermicelli
+const MENU = [
+  { c: 'starter', n: '1. Mango Salad', t: '(N) 🌶', v: 'Gỏi Xoài', d: 'Tropical mango with seasonal greens & zesty Vietnamese dressing.', p: { '': 5.80, 'with prawns': 7.20 }, img: '1' },
+  { c: 'starter', n: '2. Ha-Long Jellyfish Salad', t: '(N) 🌶', v: 'Gỏi Sứa', d: 'Shredded jellyfish, herbs & zingy Vietnamese dressing.', p: 8.60, img: '2' },
+  { c: 'starter', n: '3. Prawn Summer Rolls', t: '', v: 'Gỏi Cuốn', d: 'Rice paper rolls filled with prawns and herbs, served with house dipping sauce.', p: 7.20, img: '3' },
+  { c: 'starter', n: '4. Citrus Beef Salad', t: '(N) 🌶', v: 'Bò Tái Chanh', d: 'Tender beef with fresh herbs & crisp greens, tossed in a zesty Vietnamese citrus dressing.', p: 8.60, img: '4' },
+  { c: 'starter', n: '5. Vietnamese Pancake', t: '(G)', v: 'Bánh Xèo', d: 'Crispy rice pancake filled with chicken & prawns, bean sprouts, fresh herbs & dipping sauce.', p: 7.80, img: '5' },
+  { c: 'starter', n: '6. Crispy Fried Spring Rolls', t: '(G)', v: 'Chả Giò', d: 'Crispy rolls with chicken & prawns, or a vegetarian option.', p: { 'chicken & prawn': 6.80, 'vegetarian': 6.80 }, img: '6' },
+  { c: 'starter', n: '7. Satay Chicken', t: '(N)', v: 'Gà Nướng Sa Tế', d: 'Grilled chicken skewers marinated in fragrant spices, delivering a smoky, tender and flavourful bite.', p: 6.95, img: '7' },
+  { c: 'starter', n: '8. Salt & Pepper', t: '🌶', v: 'Muối & Tiêu', d: 'Lightly seasoned with salt, pepper, garlic and chilli for a savoury and aromatic flavour.', p: { 'tofu': 6.50, 'golden wings': 6.80, 'squid': 7.60, 'tiger prawns': 7.80, 'ribs': 7.60 }, img: '8' },
+  { c: 'starter', n: '9. Aromatic Duck', t: '(G)', v: 'Vịt Quay', d: 'Crispy duck marinated in fragrant Vietnamese spices, with tender meat and a crispy skin.', p: { '1/4 duck': 13.80, '1/2 duck': 26.00 }, img: '9' },
+  { c: 'starter', n: '10. Chicken Broth & Golden Corn', t: '', v: 'Súp Gà Ngô', d: 'Tender shredded chicken and sweetcorn kernels in a golden broth.', p: 4.60, img: '10' },
+  { c: 'starter', n: '11. Hot & Sour Prawn Soup', t: '🌶', v: 'Súp Tôm Chua Cay', d: 'A spicy and tangy broth with prawns, mushrooms and fresh herbs.', p: 4.60, img: '11' },
+
+  { c: 'main', n: '12. Pho', t: '', v: 'Phở', d: 'Authentic street food with their signature broth, rice noodles and fresh herbs.', p: { 'chicken': 13.60, 'beef (rare/brisket)': 14.20, 'prawns': 14.80, 'roast duck': 14.20, 'tofu (V)': 13.20 }, img: '12' },
+  { c: 'main', n: '13. Bun Bo Hue', t: '🌶🌶', v: 'Bún Bò Huế', d: 'Spicy Vietnamese noodle soup with rich beef broth, tender beef slices and lemongrass, served with rice noodles and fresh herbs.', p: { 'chicken': 13.60, 'beef (rare/brisket)': 14.20, 'prawns': 14.80, 'roast duck': 14.20, 'tofu (V)': 13.20 }, img: '13' },
+  { c: 'main', n: '14. Clay Pot', t: '', v: 'Món Kho', d: 'Slow cooked with carrots and potatoes in house sauce. Served with rice or vermicelli noodles.', p: { 'beef': 16.80, 'pork': 14.80 }, img: '14', side: true },
+  { c: 'main', n: '15. Saigon Yellow Curry', t: '(D) 🌶', v: 'Cari Vàng', d: 'Creamy coconut curry simmered with local veg and peas. Served with rice or vermicelli noodles.', p: { 'chicken': 15.80, 'beef': 16.00, 'prawns': 16.20, 'tofu (V)': 15.20 }, img: '15', side: true },
+  { c: 'main', n: '16. Dancing Beef', t: '', v: 'Bò Lúc Lắc', d: 'Rump beef cubes flash-fried with garlic, pepper, butter & onions.', p: 14.60, img: '16' },
+  { c: 'main', n: '17. Hanoi Style Grilled Pork Vermicelli', t: '(N)', v: 'Bún Chả', d: 'Grilled marinated pork with vermicelli noodles, fresh herbs and crisp vegetables. Light, fragrant and well balanced.', p: 13.80, img: '17' },
+  { c: 'main', n: '18. Grill Tamarind Glazed Poussin', t: '', v: 'Gà Non Nướng Sốt Me', d: 'Grilled poussin glazed with tangy tamarind sauce. Juicy and tender with a rich sweet and sour flavour.', p: 14.60, img: '18' },
+  { c: 'main', n: '19. Lemongrass Stir Fry', t: '', v: 'Xào Lá Xả', d: 'Lemongrass stir fry, served with rice or vermicelli noodles.', p: { 'chicken': 14.20, 'beef': 14.60, 'prawns': 14.80, 'tofu (V)': 13.80 }, img: '19', side: true },
+  { c: 'main', n: '20. Stir Fried Crispy Egg Noodles', t: '(G)', v: 'Mì Trứng Xào Rau', d: 'Crispy egg noodles stir-fried with vegetables and savoury seasonings. Crunchy, rich and aromatic.', p: { 'chicken': 12.80, 'beef': 13.60, 'prawns': 13.80, 'tofu (V)': 12.20 }, img: '20' },
+  { c: 'main', n: '21. Saigon Stir Fry Flat Noodles', t: '', v: 'Phở Xào', d: 'Flat rice noodles stir-fried with vegetables and savoury sauce. Soft, rich and aromatic.', p: { 'chicken': 12.80, 'beef': 13.60, 'prawns': 13.80, 'tofu (V)': 12.80 }, img: '21' },
+  { c: 'main', n: '22. Fried Rice', t: '', v: 'Cơm Chiên', d: 'Wok-tossed fried rice with egg and your choice of protein, finished with spring onions.', p: { 'chicken': 12.80, 'beef': 13.60, 'prawns': 13.80, 'tofu (V)': 12.20, 'special': 14.00 }, img: '22' },
+  { c: 'main', n: '23. Sizzling Braised Duck in Black Pepper Sauce', t: '', v: 'Vịt Om Sốt Tiêu Đen', d: 'Sizzling braised duck in a rich black pepper sauce. Tender, bold, aromatic and slightly spicy.', p: 16.60, img: '23' },
+  { c: 'main', n: '24. Salt & Pepper Sea Bass', t: '🌶', v: 'Cá Rang Muối Tiêu', d: 'Crispy sea bass tossed with salt, pepper, garlic and chilli. A light crunch with a savoury, aromatic flavour.', p: 18.80, img: '24' },
+
+  { c: 'side', n: '25. Jasmine Rice', t: '', v: 'Cơm Trắng Gạo Jasmine', d: 'Steamed jasmine rice with a soft, fluffy texture and a light, fragrant aroma.', p: 3.00, img: '25' },
+  { c: 'side', n: '26. Fragrant Fried Rice', t: '', v: 'Cơm Chiên Thơm', d: 'Fried rice stir-fried with vegetables and aromatic seasonings.', p: 4.50, img: '26' },
+  { c: 'side', n: '27. Sweet Potato Fries', t: '', v: 'Khoai Tây Chiên', d: 'Crispy sweet potato fries, golden outside and naturally sweet inside.', p: 4.20, img: '27' },
+  { c: 'side', n: '28. Seasonal Vegetable Stir Fry in Garlic', t: '', v: 'Rau Củ Theo Mùa Xào Tỏi', d: 'Fresh seasonal vegetables stir-fried with garlic. Light, savoury, crisp and vibrant.', p: 6.80, img: '28' },
+
+  { c: 'dessert', n: 'Mango Roll & Ice Cream', t: '', v: 'Bánh Xoài Cuộn Ăn Kèm Kem', d: 'Deep fried rolls filled with sweet juicy mango, drizzled with mango sauce.', p: 4.80, img: 'd1' },
+  { c: 'dessert', n: 'Banana Fritters with Honey & Ice Cream', t: '', v: 'Chuối Chiên Mật Ong Ăn Kèm Kem', d: 'Crisp-fried banana in light batter, drizzled with warm honey. Sweet, sticky and satisfying.', p: 5.80, img: 'd2' },
+  { c: 'dessert', n: 'Lychee / Longan & Ice Cream', t: '', v: 'Nhãn Ăn Kèm Kem', d: 'Fresh Vietnamese tropical fruit paired with creamy ice cream.', p: { 'lychee': 5.60, 'longan': 5.60 }, img: 'd3' },
+];
+
+const f = document.getElementById('f');
+const statusEl = document.getElementById('status');
+const esc = s => s.replace(/[&<>"]/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[ch]);
+const money = p => '£' + p.toFixed(2);
+
+for (const fs of f.querySelectorAll('fieldset[data-course]')) {
+  const course = fs.dataset.course;
+  let html = course === 'main' ? '' :
+    `<label class="dish none"><span class="opt"><input type="radio" name="${course}" value="" checked><span>None</span></span><span class="info">No ${course === 'starter' ? 'starter' : course}, thanks</span></label>`;
+  for (const m of MENU.filter(m => m.c === course)) {
+    const variants = typeof m.p === 'number' ? { '': m.p } : m.p;
+    const opts = Object.entries(variants).map(([variant, price]) => {
+      const value = `${m.n}${variant ? ' – ' + variant : ''} (${money(price)})`;
+      return `<label class="opt"><input type="radio" name="${course}" value="${esc(value)}" data-price="${price}"${m.side ? ' data-side' : ''}${course === 'main' ? ' required' : ''}>` +
+             `<span>${variant ? esc(variant) + ' · ' : ''}${money(price)}</span></label>`;
+    }).join('');
+    html += `<div class="dish">` +
+      (m.img ? `<img src="img/${m.img}.jpg" alt="" loading="lazy" width="88" height="88">` : '') +
+      `<div class="info"><h3>${esc(m.n)} <span class="tags">${m.t}</span></h3>` +
+      `<p class="viet">${esc(m.v)}</p><p class="desc">${esc(m.d)}</p><div class="opts">${opts}</div></div></div>`;
+  }
+  fs.insertAdjacentHTML('beforeend', html);
+}
+
+let total = 0;
+f.addEventListener('change', () => {
+  const picked = [...f.querySelectorAll('input[type=radio][data-price]:checked')];
+  total = picked.reduce((t, r) => t + Number(r.dataset.price), 0);
+  document.getElementById('total').textContent = money(total);
+  document.getElementById('picked').textContent = picked.length
+    ? `${picked.length} item${picked.length > 1 ? 's' : ''} picked` : 'Pick a main to get started';
+  const withSide = !!f.querySelector('input[name=main]:checked')?.hasAttribute('data-side');
+  document.getElementById('withLabel').hidden = !withSide;
+  f.mainWith.disabled = !withSide; // disabled fields aren't submitted
+});
+f.dispatchEvent(new Event('change'));
+
+f.addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = f.querySelector('button');
+  btn.disabled = true;
+  statusEl.className = '';
+  statusEl.textContent = 'Sending…';
+  const data = new FormData(f);
+  data.set('total', total.toFixed(2));
+  try {
+    const res = await (await fetch(SCRIPT_URL, { method: 'POST', body: new URLSearchParams(data) })).json();
+    if (!res.ok) throw new Error(res.error);
+    statusEl.textContent = `Thanks ${data.get('name')}, your order is in! 🎄`;
+    f.reset();
+    f.dispatchEvent(new Event('change'));
+  } catch (err) {
+    statusEl.className = 'error';
+    statusEl.textContent = `Sorry, that didn't go through (${err.message}). Please try again or message the organiser.`;
+  }
+  btn.disabled = false;
+});
+</script>
+</body>
+</html>
